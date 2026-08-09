@@ -1,0 +1,172 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  OWNER
+  ADMIN
+  AGENT
+}
+
+enum SessionStatus {
+  DISCONNECTED
+  SCAN_QR_NEEDED
+  CONNECTING
+  CONNECTED
+}
+
+enum ConvStatus {
+  AI_HANDLING
+  NEEDS_HUMAN
+  HUMAN_HANDLING
+  RESOLVED
+}
+
+enum MessageRole {
+  CUSTOMER
+  AI
+  HUMAN_AGENT
+}
+
+model User {
+  id              String         @id @default(cuid())
+  email           String         @unique
+  password        String
+  name            String
+  refreshToken    String?
+  onboarded       Boolean        @default(false)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  memberships     TenantMember[]
+  subscriptions   Subscription?
+}
+
+model BusinessAccount {
+  id              String         @id @default(cuid())
+  slug            String         @unique
+  name            String
+  description     String?        @db.Text
+  category        String?
+  operatingHours  Json?
+  escalationPhone String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  members         TenantMember[]
+  waSessions      WaSession[]
+  conversations   Conversation[]
+  products        Product[]
+  aiConfig        AiConfig?
+}
+
+model TenantMember {
+  id                String          @id @default(cuid())
+  userId            String
+  businessAccountId String
+  role              Role            @default(OWNER)
+  createdAt         DateTime        @default(now())
+  user              User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  businessAccount   BusinessAccount @relation(fields: [businessAccountId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, businessAccountId])
+}
+
+model WaSession {
+  id                String          @id @default(cuid())
+  businessAccountId String
+  sessionId         String          @unique // Unik ID Baileys per tenant
+  phoneNumber       String?
+  displayName       String?
+  status            SessionStatus   @default(DISCONNECTED)
+  qrCode            String?         @db.Text
+  authKeys          Json?           // Encrypted Baileys creds/session dump
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  businessAccount   BusinessAccount @relation(fields: [businessAccountId], references: [id], onDelete: Cascade)
+  conversations     Conversation[]
+}
+
+model AiConfig {
+  id                  String          @id @default(cuid())
+  businessAccountId   String          @unique
+  provider            String          @default("openrouter")
+  model               String          @default("anthropic/claude-3.5-sonnet") // OpenRouter Model ID
+  temperature         Float           @default(0.7)
+  tone                String          @default("friendly")
+  language            String          @default("id")
+  customSystemPrompt  String?         @db.Text
+  escalationKeywords  String[]
+  maxHistoryMessages  Int             @default(10)
+
+  // Knowledge Base Fields
+  businessDescription String?         @db.Text
+  catalogRules        String?         @db.Text
+  faqManual           String?         @db.Text
+  orderFlow           String?         @db.Text
+  paymentShippingInfo String?         @db.Text
+  operationalHoursInfo String?        @db.Text
+  locationCodInfo     String?         @db.Text
+  activePromoInfo     String?         @db.Text
+  forbiddenTopics     String?         @db.Text
+
+  businessAccount     BusinessAccount @relation(fields: [businessAccountId], references: [id], onDelete: Cascade)
+}
+
+model Conversation {
+  id                String          @id @default(cuid())
+  businessAccountId String
+  waSessionId       String
+  customerPhone     String
+  customerName      String?
+  status            ConvStatus      @default(AI_HANDLING)
+  lastMessageAt     DateTime?
+  createdAt         DateTime        @default(now())
+  businessAccount   BusinessAccount @relation(fields: [businessAccountId], references: [id], onDelete: Cascade)
+  waSession         WaSession       @relation(fields: [waSessionId], references: [id])
+  messages          Message[]
+}
+
+model Message {
+  id                String          @id @default(cuid())
+  conversationId    String
+  role              MessageRole
+  content           String          @db.Text
+  mediaUrl          String?
+  waMessageId       String?
+  modelUsed         String?         // e.g. "anthropic/claude-3.5-sonnet"
+  tokensUsed        Int?
+  latencyMs         Int?
+  createdAt         DateTime        @default(now())
+  conversation      Conversation    @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+}
+
+model Product {
+  id                String          @id @default(cuid())
+  businessAccountId String
+  name              String
+  description       String?         @db.Text
+  price             Decimal?
+  stock             Int?
+  imageUrl          String?
+  isActive          Boolean         @default(true)
+  createdAt         DateTime        @default(now())
+  businessAccount   BusinessAccount @relation(fields: [businessAccountId], references: [id], onDelete: Cascade)
+}
+
+model Subscription {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  plan        String   @default("STARTER")
+  status      String   @default("ACTIVE")
+  convUsed    Int      @default(0)
+  convLimit   Int      @default(500)
+  periodStart DateTime
+  periodEnd   DateTime
+  user        User     @relation(fields: [userId], references: [id])
+}

@@ -1,0 +1,105 @@
+import { PrismaService } from '../../prisma/prisma.service';
+export declare class SettingsService {
+    private prisma;
+    constructor(prisma: PrismaService);
+    getProfile(businessAccountId: string): Promise<{
+        id: string;
+        slug: string;
+        name: string;
+        description: string | null;
+        category: string | null;
+        operatingHours: import("@prisma/client/runtime/library").JsonValue | null;
+        escalationPhone: string | null;
+        createdAt: Date;
+        updatedAt: Date;
+    } | null>;
+    updateProfile(businessAccountId: string, data: any): Promise<{
+        id: string;
+        slug: string;
+        name: string;
+        description: string | null;
+        category: string | null;
+        operatingHours: import("@prisma/client/runtime/library").JsonValue | null;
+        escalationPhone: string | null;
+        createdAt: Date;
+        updatedAt: Date;
+    }>;
+    getAiConfig(businessAccountId: string): Promise<{
+        id: string;
+        businessAccountId: string;
+        provider: string;
+        model: string;
+        temperature: number;
+        tone: string;
+        language: string;
+        customSystemPrompt: string | null;
+        escalationKeywords: string[];
+        maxHistoryMessages: number;
+        businessDescription: string | null;
+        catalogRules: string | null;
+        faqManual: string | null;
+        orderFlow: string | null;
+        paymentShippingInfo: string | null;
+        operationalHoursInfo: string | null;
+        locationCodInfo: string | null;
+        activePromoInfo: string | null;
+        forbiddenTopics: string | null;
+    } | null>;
+    updateAiConfig(businessAccountId: string, data: any): Promise<{
+        id: string;
+        businessAccountId: string;
+        provider: string;
+        model: string;
+        temperature: number;
+        tone: string;
+        language: string;
+        customSystemPrompt: string | null;
+        escalationKeywords: string[];
+        maxHistoryMessages: number;
+        businessDescription: string | null;
+        catalogRules: string | null;
+        faqManual: string | null;
+        orderFlow: string | null;
+        paymentShippingInfo: string | null;
+        operationalHoursInfo: string | null;
+        locationCodInfo: string | null;
+        activePromoInfo: string | null;
+        forbiddenTopics: string | null;
+    }>;
+    getWaSession(businessAccountId: string): Promise<{
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        businessAccountId: string;
+        sessionId: string;
+        phoneNumber: string | null;
+        displayName: string | null;
+        status: import(".prisma/client").$Enums.SessionStatus;
+        qrCode: string | null;
+        authKeys: import("@prisma/client/runtime/library").JsonValue | null;
+    } | null>;
+    createWaSession(businessAccountId: string): Promise<{
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        businessAccountId: string;
+        sessionId: string;
+        phoneNumber: string | null;
+        displayName: string | null;
+        status: import(".prisma/client").$Enums.SessionStatus;
+        qrCode: string | null;
+        authKeys: import("@prisma/client/runtime/library").JsonValue | null;
+    }>;
+    disconnectWaSession(sessionId: string): Promise<{
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        businessAccountId: string;
+        sessionId: string;
+        phoneNumber: string | null;
+        displayName: string | null;
+        status: import(".prisma/client").$Enums.SessionStatus;
+        qrCode: string | null;
+        authKeys: import("@prisma/client/runtime/library").JsonValue | null;
+    }>;
+}
