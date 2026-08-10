@@ -31,7 +31,7 @@ export default function LoginPage() {
     setLoading(true);
     setError('');
     try {
-      const res = await axios.post('http://localhost:3000/api/auth/login', form);
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/auth/login`, form);
       localStorage.setItem('token', res.data.access_token);
       if (res.data.tenantId) {
         localStorage.setItem('tenantId', res.data.tenantId);

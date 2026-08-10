@@ -33,8 +33,8 @@ export default function TeamPage() {
     setLoading(true);
     try {
       const [membersRes, meRes] = await Promise.all([
-        axios.get('http://localhost:3000/api/team', { headers: { 'x-tenant-id': tenantId } }),
-        axios.get('http://localhost:3000/api/auth/me', { headers: { 'x-tenant-id': tenantId } })
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/team`, { headers: { 'x-tenant-id': tenantId } }),
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/auth/me`, { headers: { 'x-tenant-id': tenantId } })
       ]);
       setMembers(membersRes.data);
       setCurrentUserRole(meRes.data.role);
@@ -50,7 +50,7 @@ export default function TeamPage() {
     setInviting(true);
     setInviteResult(null);
     try {
-      const res = await axios.post('http://localhost:3000/api/team', {
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/team`, {
         email: inviteEmail,
         name: inviteName,
         role: inviteRole
@@ -75,7 +75,7 @@ export default function TeamPage() {
   const handleUpdateRole = async (memberId: string, newRole: string) => {
     if (confirm('Ubah role anggota ini?')) {
       try {
-        await axios.put(`http://localhost:3000/api/team/${memberId}`, { role: newRole }, { headers: { 'x-tenant-id': tenantId } });
+        await axios.put(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/team/${memberId}`, { role: newRole }, { headers: { 'x-tenant-id': tenantId } });
         fetchData();
       } catch (e: any) {
         alert(e.response?.data?.message || 'Gagal mengubah role');
@@ -86,7 +86,7 @@ export default function TeamPage() {
   const handleRemove = async (memberId: string) => {
     if (confirm('Anda yakin ingin mengeluarkan anggota ini dari tim?')) {
       try {
-        await axios.delete(`http://localhost:3000/api/team/${memberId}`, { headers: { 'x-tenant-id': tenantId } });
+        await axios.delete(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/team/${memberId}`, { headers: { 'x-tenant-id': tenantId } });
         fetchData();
       } catch (e: any) {
         alert(e.response?.data?.message || 'Gagal mengeluarkan anggota');

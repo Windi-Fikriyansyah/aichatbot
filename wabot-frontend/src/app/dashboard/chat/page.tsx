@@ -33,7 +33,7 @@ export default function ChatViewer() {
     // Fetch initial list
     fetchConversations();
 
-    const socket = io('http://localhost:3000');
+    const socket = io(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}`);
     
     // Bergabung ke room tenant
     socket.emit('joinTenant', tenantId);
@@ -106,7 +106,7 @@ export default function ChatViewer() {
 
   const fetchConversations = async () => {
     try {
-      const res = await axios.get('http://localhost:3000/api/chat/conversations', { headers: { 'x-tenant-id': tenantId } });
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/chat/conversations`, { headers: { 'x-tenant-id': tenantId } });
       setConversations(res.data);
     } catch (e) {
       console.error(e);
@@ -116,7 +116,7 @@ export default function ChatViewer() {
   const fetchMessages = async (id: string) => {
     setLoadingMsg(true);
     try {
-      const res = await axios.get(`http://localhost:3000/api/chat/conversations/${id}/messages`, { headers: { 'x-tenant-id': tenantId } });
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/chat/conversations/${id}/messages`, { headers: { 'x-tenant-id': tenantId } });
       setMessages(res.data);
     } catch (e) {
       console.error(e);
@@ -133,7 +133,7 @@ export default function ChatViewer() {
   const handleStatusChange = async (status: string) => {
     if (!activeConvId) return;
     try {
-      await axios.put(`http://localhost:3000/api/chat/conversations/${activeConvId}/status`, { status }, { headers: { 'x-tenant-id': tenantId } });
+      await axios.put(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/chat/conversations/${activeConvId}/status`, { status }, { headers: { 'x-tenant-id': tenantId } });
       setConversations(prev => prev.map(c => c.id === activeConvId ? { ...c, status } : c));
     } catch (e) {
       console.error('Gagal mengubah status', e);
@@ -146,7 +146,7 @@ export default function ChatViewer() {
 
     setIsReplying(true);
     try {
-      const response = await axios.post(`http://localhost:3000/api/chat/conversations/${activeConvId}/reply`, {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/chat/conversations/${activeConvId}/reply`, {
         content: replyText,
         mediaUrl: mediaUrl || undefined
       }, { headers: { 'x-tenant-id': tenantId } });

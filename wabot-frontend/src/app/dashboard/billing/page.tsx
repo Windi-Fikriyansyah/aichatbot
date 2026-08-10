@@ -22,21 +22,21 @@ function BillingContent() {
   const fetchData = async () => {
     if (!tenantId) return;
     try {
-      const res = await axios.get('http://localhost:3000/api/billing', {
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/billing`, {
         headers: { 'x-tenant-id': tenantId }
       });
       setSub(res.data);
       
       // Jika kembali dari mock Pakasir success
       if (searchParams.get('mock_success') === 'true') {
-        await axios.post('http://localhost:3000/api/billing/upgrade-mock', {}, {
+        await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/billing/upgrade-mock`, {}, {
           headers: { 'x-tenant-id': tenantId }
         });
         alert('Pembayaran Berhasil! Paket Anda telah ditingkatkan ke PRO.');
         router.replace('/dashboard/billing');
         
         // Refresh data
-        const res2 = await axios.get('http://localhost:3000/api/billing', {
+        const res2 = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/billing`, {
           headers: { 'x-tenant-id': tenantId }
         });
         setSub(res2.data);
@@ -57,7 +57,7 @@ function BillingContent() {
     
     setUpgrading(true);
     try {
-      const res = await axios.post('http://localhost:3000/api/billing/checkout', { plan: planName }, {
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/billing/checkout`, { plan: planName }, {
         headers: { 'x-tenant-id': tenantId }
       });
       

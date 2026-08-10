@@ -29,7 +29,7 @@ export default function RegisterPage() {
     setLoading(true);
     setError('');
     try {
-      const res = await axios.post('http://localhost:3000/api/auth/register', form);
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/auth/register`, form);
       localStorage.setItem('token', res.data.access_token);
       router.push('/step-1-profile');
     } catch (err: any) {

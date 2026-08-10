@@ -14,7 +14,7 @@
 
   // Base URL (Change this to production URL later)
   const BASE_URL = 'http://localhost:3001';
-  const API_URL = 'http://localhost:3000';
+  const API_URL = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}`;
 
   // Create Container
   const container = document.createElement('div');

@@ -24,7 +24,7 @@ export default function Step2WaConnect() {
 
     const initWaSession = async () => {
       try {
-        const res = await axios.post('http://localhost:3000/api/onboarding/wa-session', {}, {
+        const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/onboarding/wa-session`, {}, {
           headers: { 'x-tenant-id': tenantId }
         });
         
@@ -43,7 +43,7 @@ export default function Step2WaConnect() {
 
     initWaSession();
 
-    const socket = io('http://localhost:3000');
+    const socket = io(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}`);
 
     socket.on(`wa-qr-${tenantId}`, (data) => {
       setQrCode(data.qr);

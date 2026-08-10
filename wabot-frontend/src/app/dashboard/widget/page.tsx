@@ -22,7 +22,7 @@ export default function WidgetPage() {
     
     if (tId && token) {
       setTenantId(tId);
-      axios.get(`http://localhost:3000/api/widget/config/${tId}`)
+      axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/widget/config/${tId}`)
         .then(res => {
           if (res.data) {
             setPrimaryColor(res.data.primaryColor);
@@ -43,7 +43,7 @@ export default function WidgetPage() {
 
     setIsSaving(true);
     try {
-      await axios.put('http://localhost:3000/api/widget/config', {
+      await axios.put(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/widget/config`, {
         primaryColor, welcomeMessage, botName, position
       }, {
         headers: { 'Authorization': `Bearer ${token}`, 'x-tenant-id': tId }

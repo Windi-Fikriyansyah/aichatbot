@@ -22,7 +22,7 @@ export default function Step1Profile() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:3000/api/onboarding/start', formData);
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/onboarding/start`, formData);
       // Simpan businessAccountId di localStorage untuk flow selanjutnya
       localStorage.setItem('tenantId', res.data.id);
       router.push('/step-2-wa-connect');

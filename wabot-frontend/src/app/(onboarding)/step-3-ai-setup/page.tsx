@@ -24,7 +24,7 @@ export default function Step3AiSetup() {
 
     setLoading(true);
     try {
-      await axios.post('http://localhost:3000/api/onboarding/ai-config', formData, {
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/onboarding/ai-config`, formData, {
         headers: { 'x-tenant-id': tenantId }
       });
       router.push('/step-4-catalog');

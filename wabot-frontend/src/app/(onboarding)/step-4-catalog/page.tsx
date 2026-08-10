@@ -26,7 +26,7 @@ export default function Step4Catalog() {
   const fetchProducts = async () => {
     if (!tenantId) return;
     try {
-      const res = await axios.get('http://localhost:3000/api/catalog', {
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/catalog`, {
         headers: { 'x-tenant-id': tenantId }
       });
       setProducts(res.data);
@@ -46,7 +46,7 @@ export default function Step4Catalog() {
     setLoading(true);
     setSuccessMsg('');
     try {
-      await axios.post('http://localhost:3000/api/onboarding/catalog', formData, {
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/onboarding/catalog`, formData, {
         headers: { 'x-tenant-id': tenantId }
       });
       setSuccessMsg('Produk berhasil ditambahkan!');
@@ -64,7 +64,7 @@ export default function Step4Catalog() {
   const handleDeleteProduct = async (id: string) => {
     if (!tenantId) return;
     try {
-      await axios.delete(`http://localhost:3000/api/catalog/${id}`, {
+      await axios.delete(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/catalog/${id}`, {
         headers: { 'x-tenant-id': tenantId }
       });
       fetchProducts();
@@ -76,7 +76,7 @@ export default function Step4Catalog() {
   const handleComplete = async () => {
     setCompleting(true);
     try {
-      await axios.post('http://localhost:3000/api/onboarding/complete', {}, {
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/onboarding/complete`, {}, {
         headers: { 'x-tenant-id': tenantId }
       });
       router.push('/dashboard');

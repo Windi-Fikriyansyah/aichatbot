@@ -80,7 +80,7 @@ const AppSidebar: React.FC = () => {
     const token = localStorage.getItem('token');
     
     if (tenantId && token) {
-      axios.get('http://localhost:3000/api/auth/me', {
+      axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/auth/me`, {
         headers: {
           'x-tenant-id': tenantId,
           'Authorization': `Bearer ${token}`

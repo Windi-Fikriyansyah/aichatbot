@@ -12,7 +12,7 @@ export default function DashboardOverview() {
 
   useEffect(() => {
     if (!tenantId) return;
-    axios.get('http://localhost:3000/api/analytics/stats', { headers: { 'x-tenant-id': tenantId } })
+    axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/analytics/stats`, { headers: { 'x-tenant-id': tenantId } })
       .then(res => setStats(res.data))
       .catch(e => console.error('Gagal mengambil statistik', e));
   }, [tenantId]);

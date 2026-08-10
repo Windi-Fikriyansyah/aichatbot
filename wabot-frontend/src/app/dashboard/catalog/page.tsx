@@ -18,7 +18,7 @@ export default function CatalogPage() {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get('http://localhost:3000/api/catalog', { headers: { 'x-tenant-id': tenantId } });
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/catalog`, { headers: { 'x-tenant-id': tenantId } });
       setProducts(res.data);
     } catch (e) {
       console.error(e);
@@ -33,14 +33,14 @@ export default function CatalogPage() {
 
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
-    await axios.post('http://localhost:3000/api/catalog', form, { headers: { 'x-tenant-id': tenantId } });
+    await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/catalog`, form, { headers: { 'x-tenant-id': tenantId } });
     setForm({ name: '', description: '', price: '' });
     fetchProducts();
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm('Hapus produk ini?')) return;
-    await axios.delete(`http://localhost:3000/api/catalog/${id}`, { headers: { 'x-tenant-id': tenantId } });
+    await axios.delete(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/catalog/${id}`, { headers: { 'x-tenant-id': tenantId } });
     fetchProducts();
   };
 

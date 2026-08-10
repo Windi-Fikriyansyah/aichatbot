@@ -38,7 +38,7 @@ export default function SettingsPage() {
     if (tenantId) {
       fetchData();
       
-      const socket = io('http://localhost:3000');
+      const socket = io(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}`);
       
       socket.on(`wa-qr-${tenantId}`, (data) => {
         setQrCode(data.qr);
@@ -66,9 +66,9 @@ export default function SettingsPage() {
     try {
       const headers = { 'x-tenant-id': tenantId };
       const [profRes, aiRes, waRes] = await Promise.all([
-        axios.get('http://localhost:3000/api/settings/profile', { headers }),
-        axios.get('http://localhost:3000/api/settings/ai-config', { headers }),
-        axios.get('http://localhost:3000/api/settings/wa-session', { headers })
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/settings/profile`, { headers }),
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/settings/ai-config`, { headers }),
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/settings/wa-session`, { headers })
       ]);
       
       if (profRes.data) setProfile(profRes.data);
@@ -103,7 +103,7 @@ export default function SettingsPage() {
   const saveProfile = async () => {
     setSavingProfile(true);
     try {
-      await axios.put('http://localhost:3000/api/settings/profile', profile, { headers: { 'x-tenant-id': tenantId } });
+      await axios.put(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/settings/profile`, profile, { headers: { 'x-tenant-id': tenantId } });
       alert('Profil berhasil disimpan');
     } catch (e) {
       alert('Gagal menyimpan profil');
@@ -117,7 +117,7 @@ export default function SettingsPage() {
     try {
       const keys = escalationKeys.split(',').map(k => k.trim()).filter(k => k);
       const payload = { ...aiConfig, escalationKeywords: keys };
-      await axios.put('http://localhost:3000/api/settings/ai-config', payload, { headers: { 'x-tenant-id': tenantId } });
+      await axios.put(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/settings/ai-config`, payload, { headers: { 'x-tenant-id': tenantId } });
       alert('Konfigurasi AI berhasil disimpan');
     } catch (e) {
       alert('Gagal menyimpan konfigurasi AI');
@@ -129,7 +129,7 @@ export default function SettingsPage() {
   const connectWa = async () => {
     setWaConnecting(true);
     try {
-      const res = await axios.post('http://localhost:3000/api/settings/wa-connect', {}, { headers: { 'x-tenant-id': tenantId } });
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/settings/wa-connect`, {}, { headers: { 'x-tenant-id': tenantId } });
       const { status: sessionStatus, qrCode: savedQr } = res.data;
       setWaSession(res.data);
       if (sessionStatus === 'CONNECTED') {
@@ -150,7 +150,7 @@ export default function SettingsPage() {
 
   const disconnectWa = async () => {
     try {
-      await axios.post('http://localhost:3000/api/settings/wa-logout', {}, { headers: { 'x-tenant-id': tenantId } });
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/settings/wa-logout`, {}, { headers: { 'x-tenant-id': tenantId } });
       setWaSession({ status: 'DISCONNECTED' });
       setWaStatus('Terputus');
       setQrCode('');
@@ -163,14 +163,14 @@ export default function SettingsPage() {
     setWaConnecting(true);
     try {
       // First logout to clear old auth
-      await axios.post('http://localhost:3000/api/settings/wa-logout', {}, { headers: { 'x-tenant-id': tenantId } });
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/settings/wa-logout`, {}, { headers: { 'x-tenant-id': tenantId } });
       setQrCode('');
       setWaStatus('Mereset koneksi...');
       
       // Wait a moment, then reconnect fresh
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      const res = await axios.post('http://localhost:3000/api/settings/wa-connect', {}, { headers: { 'x-tenant-id': tenantId } });
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/settings/wa-connect`, {}, { headers: { 'x-tenant-id': tenantId } });
       const { status: sessionStatus, qrCode: savedQr } = res.data;
       setWaSession(res.data);
       if (sessionStatus === 'CONNECTED') {

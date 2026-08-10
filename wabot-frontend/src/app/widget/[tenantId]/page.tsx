@@ -29,7 +29,7 @@ export default function WidgetApp() {
   const [aiStatus, setAiStatus] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    axios.get(`http://localhost:3000/api/widget/config/${tenantId}`)
+    axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/widget/config/${tenantId}`)
       .then(res => {
         if (res.data) setConfig(res.data);
       })
@@ -42,7 +42,7 @@ export default function WidgetApp() {
       localStorage.setItem(`wa_widget_session_${tenantId}`, cId);
     }
 
-    const newSocket = io("http://localhost:3000");
+    const newSocket = io(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}`);
     setSocket(newSocket);
 
     newSocket.on("connect", () => {
