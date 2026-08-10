@@ -6,25 +6,25 @@ export declare class SettingsController {
     constructor(settingsService: SettingsService, baileysService: BaileysService);
     getProfile(tenantId: string): Promise<{
         id: string;
-        slug: string;
         name: string;
+        createdAt: Date;
+        updatedAt: Date;
         description: string | null;
+        slug: string;
         category: string | null;
         operatingHours: import("@prisma/client/runtime/library").JsonValue | null;
         escalationPhone: string | null;
-        createdAt: Date;
-        updatedAt: Date;
     } | null>;
     updateProfile(tenantId: string, body: any): Promise<{
         id: string;
-        slug: string;
         name: string;
+        createdAt: Date;
+        updatedAt: Date;
         description: string | null;
+        slug: string;
         category: string | null;
         operatingHours: import("@prisma/client/runtime/library").JsonValue | null;
         escalationPhone: string | null;
-        createdAt: Date;
-        updatedAt: Date;
     }>;
     getAiConfig(tenantId: string): Promise<{
         id: string;
@@ -34,18 +34,10 @@ export declare class SettingsController {
         temperature: number;
         tone: string;
         language: string;
-        customSystemPrompt: string | null;
+        baseSystemPrompt: string | null;
         escalationKeywords: string[];
         maxHistoryMessages: number;
-        businessDescription: string | null;
-        catalogRules: string | null;
-        faqManual: string | null;
-        orderFlow: string | null;
-        paymentShippingInfo: string | null;
-        operationalHoursInfo: string | null;
-        locationCodInfo: string | null;
-        activePromoInfo: string | null;
-        forbiddenTopics: string | null;
+        knowledgeBase: string | null;
     } | null>;
     updateAiConfig(tenantId: string, body: any): Promise<{
         id: string;
@@ -55,28 +47,20 @@ export declare class SettingsController {
         temperature: number;
         tone: string;
         language: string;
-        customSystemPrompt: string | null;
+        baseSystemPrompt: string | null;
         escalationKeywords: string[];
         maxHistoryMessages: number;
-        businessDescription: string | null;
-        catalogRules: string | null;
-        faqManual: string | null;
-        orderFlow: string | null;
-        paymentShippingInfo: string | null;
-        operationalHoursInfo: string | null;
-        locationCodInfo: string | null;
-        activePromoInfo: string | null;
-        forbiddenTopics: string | null;
+        knowledgeBase: string | null;
     }>;
     getWaSession(tenantId: string): Promise<{
         id: string;
         createdAt: Date;
         updatedAt: Date;
+        status: import(".prisma/client").$Enums.SessionStatus;
         businessAccountId: string;
         sessionId: string;
         phoneNumber: string | null;
         displayName: string | null;
-        status: import(".prisma/client").$Enums.SessionStatus;
         qrCode: string | null;
         authKeys: import("@prisma/client/runtime/library").JsonValue | null;
     } | null>;
@@ -84,11 +68,11 @@ export declare class SettingsController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
+        status: import(".prisma/client").$Enums.SessionStatus;
         businessAccountId: string;
         sessionId: string;
         phoneNumber: string | null;
         displayName: string | null;
-        status: import(".prisma/client").$Enums.SessionStatus;
         qrCode: string | null;
         authKeys: import("@prisma/client/runtime/library").JsonValue | null;
     } | null>;

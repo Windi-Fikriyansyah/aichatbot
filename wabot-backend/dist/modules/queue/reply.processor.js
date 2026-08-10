@@ -33,6 +33,8 @@ let ReplyProcessor = ReplyProcessor_1 = class ReplyProcessor extends bullmq_1.Wo
     async process(job) {
         const { businessAccountId, sessionId, toPhone, content, tokensUsed, latencyMs, convId, modelUsed } = job.data;
         try {
+            const jid = toPhone.includes('@') ? toPhone : `${toPhone.replace(/[^0-9]/g, '')}@s.whatsapp.net`;
+            await this.baileys.sendPresenceUpdate(sessionId, 'paused', jid);
             const waMsgId = await this.baileys.sendMessage(sessionId, toPhone, content);
             const newMessage = await this.prisma.message.create({
                 data: {

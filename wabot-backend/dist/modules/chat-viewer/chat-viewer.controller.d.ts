@@ -6,20 +6,20 @@ export declare class ChatViewerController {
         messages: {
             id: string;
             createdAt: Date;
-            content: string;
+            role: import(".prisma/client").$Enums.MessageRole;
             tokensUsed: number | null;
             latencyMs: number | null;
-            modelUsed: string | null;
-            role: import(".prisma/client").$Enums.MessageRole;
-            mediaUrl: string | null;
             waMessageId: string | null;
+            content: string;
+            mediaUrl: string | null;
+            modelUsed: string | null;
             conversationId: string;
         }[];
     } & {
         id: string;
-        businessAccountId: string;
-        status: import(".prisma/client").$Enums.ConvStatus;
         createdAt: Date;
+        status: import(".prisma/client").$Enums.ConvStatus;
+        businessAccountId: string;
         waSessionId: string;
         customerPhone: string;
         customerName: string | null;
@@ -28,20 +28,20 @@ export declare class ChatViewerController {
     getMessages(tenantId: string, id: string): Promise<{
         id: string;
         createdAt: Date;
-        content: string;
+        role: import(".prisma/client").$Enums.MessageRole;
         tokensUsed: number | null;
         latencyMs: number | null;
-        modelUsed: string | null;
-        role: import(".prisma/client").$Enums.MessageRole;
-        mediaUrl: string | null;
         waMessageId: string | null;
+        content: string;
+        mediaUrl: string | null;
+        modelUsed: string | null;
         conversationId: string;
     }[]>;
     updateStatus(tenantId: string, id: string, status: any): Promise<{
         id: string;
-        businessAccountId: string;
-        status: import(".prisma/client").$Enums.ConvStatus;
         createdAt: Date;
+        status: import(".prisma/client").$Enums.ConvStatus;
+        businessAccountId: string;
         waSessionId: string;
         customerPhone: string;
         customerName: string | null;
@@ -53,13 +53,13 @@ export declare class ChatViewerController {
     }): Promise<{
         id: string;
         createdAt: Date;
-        content: string;
+        role: import(".prisma/client").$Enums.MessageRole;
         tokensUsed: number | null;
         latencyMs: number | null;
-        modelUsed: string | null;
-        role: import(".prisma/client").$Enums.MessageRole;
-        mediaUrl: string | null;
         waMessageId: string | null;
+        content: string;
+        mediaUrl: string | null;
+        modelUsed: string | null;
         conversationId: string;
     }>;
 }

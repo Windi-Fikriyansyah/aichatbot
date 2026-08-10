@@ -47,17 +47,8 @@ let SettingsService = class SettingsService {
                 temperature: data.temperature,
                 tone: data.tone,
                 language: data.language,
-                customSystemPrompt: data.customSystemPrompt,
                 escalationKeywords: data.escalationKeywords,
-                businessDescription: data.businessDescription,
-                catalogRules: data.catalogRules,
-                faqManual: data.faqManual,
-                orderFlow: data.orderFlow,
-                paymentShippingInfo: data.paymentShippingInfo,
-                operationalHoursInfo: data.operationalHoursInfo,
-                locationCodInfo: data.locationCodInfo,
-                activePromoInfo: data.activePromoInfo,
-                forbiddenTopics: data.forbiddenTopics,
+                knowledgeBase: data.knowledgeBase,
             }
         });
     }

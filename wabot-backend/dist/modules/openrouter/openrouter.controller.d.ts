@@ -11,18 +11,10 @@ export declare class OpenRouterController {
         temperature: number;
         tone: string;
         language: string;
-        customSystemPrompt: string | null;
+        baseSystemPrompt: string | null;
         escalationKeywords: string[];
         maxHistoryMessages: number;
-        businessDescription: string | null;
-        catalogRules: string | null;
-        faqManual: string | null;
-        orderFlow: string | null;
-        paymentShippingInfo: string | null;
-        operationalHoursInfo: string | null;
-        locationCodInfo: string | null;
-        activePromoInfo: string | null;
-        forbiddenTopics: string | null;
+        knowledgeBase: string | null;
     }>;
     getModels(): {
         id: string;

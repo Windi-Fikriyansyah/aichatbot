@@ -23,4 +23,14 @@ export declare class AuthService {
         };
         tenantId: string | null;
     }>;
+    getUserSubscription(userId: string): Promise<{
+        id: string;
+        plan: string;
+        status: string;
+        convUsed: number;
+        convLimit: number;
+        periodStart: Date;
+        periodEnd: Date;
+        userId: string;
+    } | null>;
 }

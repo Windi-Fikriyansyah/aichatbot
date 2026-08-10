@@ -55,7 +55,8 @@ export class ChatViewerService {
 
   async replyToConversation(businessAccountId: string, conversationId: string, content: string, mediaUrl?: string) {
     const conv = await this.prisma.conversation.findUnique({
-      where: { id: conversationId, businessAccountId }
+      where: { id: conversationId, businessAccountId },
+      include: { waSession: true }
     });
 
     if (!conv) throw new NotFoundException('Conversation not found');
@@ -64,9 +65,9 @@ export class ChatViewerService {
     // TODO: implement send media if mediaUrl is provided
     let waMsgId;
     if (mediaUrl) {
-      waMsgId = await this.baileys.sendMediaMessage(conv.waSessionId, conv.customerPhone, mediaUrl, content);
+      waMsgId = await this.baileys.sendMediaMessage(conv.waSession.sessionId, conv.customerPhone, mediaUrl, content);
     } else {
-      waMsgId = await this.baileys.sendMessage(conv.waSessionId, conv.customerPhone, content);
+      waMsgId = await this.baileys.sendMessage(conv.waSession.sessionId, conv.customerPhone, content);
     }
 
     // Simpan ke DB

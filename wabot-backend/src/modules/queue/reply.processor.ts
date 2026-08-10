@@ -22,7 +22,8 @@ export class ReplyProcessor extends WorkerHost {
     const { businessAccountId, sessionId, toPhone, content, tokensUsed, latencyMs, convId, modelUsed } = job.data;
 
     try {
-      // 1. Kirim pesan ke WhatsApp
+      const jid = toPhone.includes('@') ? toPhone : `${toPhone.replace(/[^0-9]/g, '')}@s.whatsapp.net`;
+      await this.baileys.sendPresenceUpdate(sessionId, 'paused', jid);
       const waMsgId = await this.baileys.sendMessage(sessionId, toPhone, content);
 
       // 2. Simpan pesan assistant ke database

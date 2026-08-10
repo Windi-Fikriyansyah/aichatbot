@@ -83,12 +83,15 @@ let AuthService = class AuthService {
         };
     }
     async login(email, pass) {
+        console.log('[AUTH DEBUG] Login attempt:', { email, passLength: pass?.length, passReceived: !!pass });
         const user = await this.prisma.user.findUnique({ where: { email } });
+        console.log('[AUTH DEBUG] User found:', !!user, user ? { id: user.id, email: user.email } : 'NOT FOUND');
         if (!user)
-            throw new common_1.UnauthorizedException('Kredensial tidak valid');
+            throw new common_1.UnauthorizedException('Kredensial tidak valid - user tidak ditemukan');
         const isMatch = await bcrypt.compare(pass, user.password);
+        console.log('[AUTH DEBUG] Password match:', isMatch);
         if (!isMatch)
-            throw new common_1.UnauthorizedException('Kredensial tidak valid');
+            throw new common_1.UnauthorizedException('Kredensial tidak valid - password salah');
         const payload = { sub: user.id, email: user.email };
         const tenantMember = await this.prisma.tenantMember.findFirst({
             where: { userId: user.id }
@@ -103,6 +106,11 @@ let AuthService = class AuthService {
             },
             tenantId: tenantMember?.businessAccountId || null
         };
+    }
+    async getUserSubscription(userId) {
+        return this.prisma.subscription.findUnique({
+            where: { userId }
+        });
     }
 };
 exports.AuthService = AuthService;

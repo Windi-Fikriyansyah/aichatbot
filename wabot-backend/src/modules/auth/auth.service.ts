@@ -41,11 +41,17 @@ export class AuthService {
   }
 
   async login(email: string, pass: string) {
+    console.log('[AUTH DEBUG] Login attempt:', { email, passLength: pass?.length, passReceived: !!pass });
+    
     const user = await this.prisma.user.findUnique({ where: { email } });
-    if (!user) throw new UnauthorizedException('Kredensial tidak valid');
+    console.log('[AUTH DEBUG] User found:', !!user, user ? { id: user.id, email: user.email } : 'NOT FOUND');
+    
+    if (!user) throw new UnauthorizedException('Kredensial tidak valid - user tidak ditemukan');
 
     const isMatch = await bcrypt.compare(pass, user.password);
-    if (!isMatch) throw new UnauthorizedException('Kredensial tidak valid');
+    console.log('[AUTH DEBUG] Password match:', isMatch);
+    
+    if (!isMatch) throw new UnauthorizedException('Kredensial tidak valid - password salah');
 
     const payload = { sub: user.id, email: user.email };
     
@@ -63,5 +69,10 @@ export class AuthService {
       },
       tenantId: tenantMember?.businessAccountId || null
     };
+  }
+  async getUserSubscription(userId: string) {
+    return this.prisma.subscription.findUnique({
+      where: { userId }
+    });
   }
 }

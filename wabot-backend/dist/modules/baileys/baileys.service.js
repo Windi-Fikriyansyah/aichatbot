@@ -80,6 +80,12 @@ let BaileysService = BaileysService_1 = class BaileysService {
             auth: state,
             printQRInTerminal: false,
             logger: pinoLogger,
+            browser: ['WaBot', 'Chrome', '1.0.0'],
+            generateHighQualityLinkPreview: true,
+            syncFullHistory: false,
+            getMessage: async (key) => {
+                return { conversation: 'hello' };
+            },
         });
         this.sessions.set(sessionId, sock);
         sock.ev.on('creds.update', saveCreds);
@@ -138,23 +144,45 @@ let BaileysService = BaileysService_1 = class BaileysService {
         const fs = await import('fs');
         const path = await import('path');
         const sessionDir = path.resolve(`./sessions/${sessionId}`);
+        await new Promise(resolve => setTimeout(resolve, 500));
         if (fs.existsSync(sessionDir)) {
-            fs.rmSync(sessionDir, { recursive: true, force: true });
+            try {
+                await fs.promises.rm(sessionDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
+            }
+            catch (err) {
+                this.logger.error(`Failed to delete session directory: ${err}`);
+            }
         }
     }
     async sendMessage(sessionId, toPhone, text) {
         const sock = this.sessions.get(sessionId);
         if (!sock)
             throw new Error('WhatsApp session tidak terhubung');
-        const jid = `${toPhone.replace(/[^0-9]/g, '')}@s.whatsapp.net`;
+        const jid = toPhone.includes('@') ? toPhone : `${toPhone.replace(/[^0-9]/g, '')}@s.whatsapp.net`;
+        this.logger.log(`[DEBUG] Baileys actually sending message to: ${jid}`);
         const msg = await sock.sendMessage(jid, { text: text });
         return msg?.key?.id;
+    }
+    async sendPresenceUpdate(sessionId, type, toJid) {
+        const sock = this.sessions.get(sessionId);
+        if (!sock || !sock.authState.creds.me)
+            return;
+        if (toJid && ["composing", "recording", "paused"].includes(type)) {
+            try {
+                await sock.sendPresenceUpdate("available");
+                await sock.presenceSubscribe(toJid);
+            }
+            catch (e) {
+                this.logger.warn(`[DEBUG] autoSubscribePresence error: ${e}`);
+            }
+        }
+        return sock.sendPresenceUpdate(type, toJid);
     }
     async sendMediaMessage(sessionId, toPhone, mediaUrl, caption) {
         const sock = this.sessions.get(sessionId);
         if (!sock)
             throw new Error('WhatsApp session tidak terhubung');
-        const jid = `${toPhone.replace(/[^0-9]/g, '')}@s.whatsapp.net`;
+        const jid = toPhone.includes('@') ? toPhone : `${toPhone.replace(/[^0-9]/g, '')}@s.whatsapp.net`;
         const msg = await sock.sendMessage(jid, {
             image: { url: mediaUrl },
             caption: caption

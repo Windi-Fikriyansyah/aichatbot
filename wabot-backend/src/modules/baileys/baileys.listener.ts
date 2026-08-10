@@ -43,13 +43,32 @@ export class BaileysListener {
       if (m.type === 'notify') {
         for (const msg of m.messages) {
           if (!msg.key.fromMe) {
-            const senderPhone = msg.key.remoteJid?.split('@')[0];
-            const senderName = msg.pushName || senderPhone;
+            const rawJid = msg.key.remoteJid;
+            // Hanya proses pesan dari chat pribadi (@s.whatsapp.net atau @lid)
+            if (!rawJid?.includes('@s.whatsapp.net') && !rawJid?.includes('@lid')) {
+              this.logger.log(`[DEBUG] Ignored message from non-private JID: ${rawJid}`);
+              continue;
+            }
+
+            // Keep the domain (@s.whatsapp.net or @lid), but remove the device ID if present (e.g. :4)
+            // Example rawJid: 62896...:4@s.whatsapp.net -> we want 62896...@s.whatsapp.net
+            const jidParts = rawJid.split('@');
+            const senderPhone = `${jidParts[0].split(':')[0]}@${jidParts[1]}`;
+            
+            const senderName = msg.pushName || senderPhone.split('@')[0];
             const content = msg.message?.conversation || msg.message?.extendedTextMessage?.text;
             const waMessageId = msg.key.id;
 
             if (content && senderPhone) {
               this.logger.log(`Inbound text message received from ${senderPhone} for ${businessAccountId}`);
+              
+              // Tandai pesan sebagai telah dibaca agar indikator 'typing' bisa muncul di HP pengirim
+              try {
+                await sock.readMessages([msg.key]);
+              } catch (e) {
+                this.logger.warn(`Failed to mark message as read: ${e}`);
+              }
+              
               await this.processQueue.add('process-message', {
                 businessAccountId,
                 sessionId,

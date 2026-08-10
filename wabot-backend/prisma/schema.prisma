@@ -100,20 +100,12 @@ model AiConfig {
   temperature         Float           @default(0.7)
   tone                String          @default("friendly")
   language            String          @default("id")
-  customSystemPrompt  String?         @db.Text
+  baseSystemPrompt    String?         @db.Text
   escalationKeywords  String[]
   maxHistoryMessages  Int             @default(10)
 
   // Knowledge Base Fields
-  businessDescription String?         @db.Text
-  catalogRules        String?         @db.Text
-  faqManual           String?         @db.Text
-  orderFlow           String?         @db.Text
-  paymentShippingInfo String?         @db.Text
-  operationalHoursInfo String?        @db.Text
-  locationCodInfo     String?         @db.Text
-  activePromoInfo     String?         @db.Text
-  forbiddenTopics     String?         @db.Text
+  knowledgeBase       String?         @db.Text
 
   businessAccount     BusinessAccount @relation(fields: [businessAccountId], references: [id], onDelete: Cascade)
 }

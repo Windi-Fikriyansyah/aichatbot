@@ -19,10 +19,13 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard, TenantAccessGuard)
   @Get('me')
-  getMe(@Req() req: any) {
+  async getMe(@Req() req: any) {
+    const sub = await this.authService.getUserSubscription(req.user.sub || req.user.userId || req.tenant?.userId);
     return {
       user: req.user,
-      role: req.tenant?.role
+      role: req.tenant?.role,
+      plan: sub?.plan || 'STARTER',
+      status: sub?.status || 'INACTIVE'
     };
   }
 }

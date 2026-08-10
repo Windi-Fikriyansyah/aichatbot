@@ -4,9 +4,9 @@ export declare class OnboardingController {
     constructor(onboardingService: OnboardingService);
     startOnboarding(req: any, body: any): Promise<{
         id: string;
+        name: string;
         createdAt: Date;
         updatedAt: Date;
-        name: string;
         description: string | null;
         slug: string;
         category: string | null;
@@ -19,15 +19,15 @@ export declare class OnboardingController {
     }>;
     createWaSession(tenantId: string): Promise<{
         id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        status: import(".prisma/client").$Enums.SessionStatus;
         businessAccountId: string;
         sessionId: string;
         phoneNumber: string | null;
         displayName: string | null;
-        status: import(".prisma/client").$Enums.SessionStatus;
         qrCode: string | null;
         authKeys: import("@prisma/client/runtime/library").JsonValue | null;
-        createdAt: Date;
-        updatedAt: Date;
     } | null>;
     saveAiConfig(tenantId: string, body: any): Promise<{
         id: string;
@@ -37,24 +37,16 @@ export declare class OnboardingController {
         temperature: number;
         tone: string;
         language: string;
-        customSystemPrompt: string | null;
+        baseSystemPrompt: string | null;
         escalationKeywords: string[];
         maxHistoryMessages: number;
-        businessDescription: string | null;
-        catalogRules: string | null;
-        faqManual: string | null;
-        orderFlow: string | null;
-        paymentShippingInfo: string | null;
-        operationalHoursInfo: string | null;
-        locationCodInfo: string | null;
-        activePromoInfo: string | null;
-        forbiddenTopics: string | null;
+        knowledgeBase: string | null;
     }>;
     addCatalog(tenantId: string, body: any): Promise<{
         id: string;
-        businessAccountId: string;
-        createdAt: Date;
         name: string;
+        createdAt: Date;
+        businessAccountId: string;
         description: string | null;
         price: import("@prisma/client/runtime/library").Decimal | null;
         stock: number | null;

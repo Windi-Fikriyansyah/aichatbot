@@ -37,14 +37,12 @@ let OpenRouterController = class OpenRouterController {
                 provider,
                 model: data.model,
                 temperature: data.temperature,
-                customSystemPrompt: data.customSystemPrompt,
             },
             create: {
                 businessAccountId: tenantId,
                 provider,
                 model: data.model || 'anthropic/claude-3.5-sonnet',
                 temperature: data.temperature || 0.7,
-                customSystemPrompt: data.customSystemPrompt || 'Anda adalah AI Assistant yang ramah.',
             }
         });
         return config;
@@ -54,7 +52,8 @@ let OpenRouterController = class OpenRouterController {
             { id: 'anthropic/claude-3.5-sonnet', name: 'Claude 3.5 Sonnet' },
             { id: 'openai/gpt-4o', name: 'GPT-4o' },
             { id: 'deepseek/deepseek-chat', name: 'DeepSeek V3' },
-            { id: 'meta-llama/llama-3-70b-instruct', name: 'Llama 3 70B' }
+            { id: 'meta-llama/llama-3-70b-instruct', name: 'Llama 3 70B' },
+            { id: 'nvidia/nemotron-3-super-120b-a12b:free', name: 'Nvidia Nemotron 120B (Free)' }
         ];
     }
 };

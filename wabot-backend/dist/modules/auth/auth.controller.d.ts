@@ -21,8 +21,10 @@ export declare class AuthController {
         };
         tenantId: string | null;
     }>;
-    getMe(req: any): {
+    getMe(req: any): Promise<{
         user: any;
         role: any;
-    };
+        plan: string;
+        status: string;
+    }>;
 }

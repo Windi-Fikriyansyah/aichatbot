@@ -59,16 +59,17 @@ let ChatViewerService = class ChatViewerService {
     }
     async replyToConversation(businessAccountId, conversationId, content, mediaUrl) {
         const conv = await this.prisma.conversation.findUnique({
-            where: { id: conversationId, businessAccountId }
+            where: { id: conversationId, businessAccountId },
+            include: { waSession: true }
         });
         if (!conv)
             throw new common_1.NotFoundException('Conversation not found');
         let waMsgId;
         if (mediaUrl) {
-            waMsgId = await this.baileys.sendMediaMessage(conv.waSessionId, conv.customerPhone, mediaUrl, content);
+            waMsgId = await this.baileys.sendMediaMessage(conv.waSession.sessionId, conv.customerPhone, mediaUrl, content);
         }
         else {
-            waMsgId = await this.baileys.sendMessage(conv.waSessionId, conv.customerPhone, content);
+            waMsgId = await this.baileys.sendMessage(conv.waSession.sessionId, conv.customerPhone, content);
         }
         const newMessage = await this.prisma.message.create({
             data: {

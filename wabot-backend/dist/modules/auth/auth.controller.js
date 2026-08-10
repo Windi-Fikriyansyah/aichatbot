@@ -28,10 +28,13 @@ let AuthController = class AuthController {
     login(body) {
         return this.authService.login(body.email, body.password);
     }
-    getMe(req) {
+    async getMe(req) {
+        const sub = await this.authService.getUserSubscription(req.user.sub || req.user.userId || req.tenant?.userId);
         return {
             user: req.user,
-            role: req.tenant?.role
+            role: req.tenant?.role,
+            plan: sub?.plan || 'STARTER',
+            status: sub?.status || 'INACTIVE'
         };
     }
 };
@@ -56,7 +59,7 @@ __decorate([
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], AuthController.prototype, "getMe", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('api/auth'),
