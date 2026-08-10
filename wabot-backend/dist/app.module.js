@@ -24,6 +24,7 @@ const chat_viewer_module_1 = require("./modules/chat-viewer/chat-viewer.module")
 const team_module_1 = require("./modules/team/team.module");
 const billing_module_1 = require("./modules/billing/billing.module");
 const settings_module_1 = require("./modules/settings/settings.module");
+const widget_module_1 = require("./modules/widget/widget.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -44,6 +45,7 @@ exports.AppModule = AppModule = __decorate([
             team_module_1.TeamModule,
             billing_module_1.BillingModule,
             settings_module_1.SettingsModule,
+            widget_module_1.WidgetModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

@@ -13,12 +13,19 @@ const chat_viewer_controller_1 = require("./chat-viewer.controller");
 const prisma_module_1 = require("../../prisma/prisma.module");
 const baileys_module_1 = require("../baileys/baileys.module");
 const gateway_module_1 = require("../../gateway/gateway.module");
+const bullmq_1 = require("@nestjs/bullmq");
 let ChatViewerModule = class ChatViewerModule {
 };
 exports.ChatViewerModule = ChatViewerModule;
 exports.ChatViewerModule = ChatViewerModule = __decorate([
     (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule, gateway_module_1.GatewayModule, (0, common_1.forwardRef)(() => baileys_module_1.BaileysModule)],
+        imports: [
+            prisma_module_1.PrismaModule,
+            gateway_module_1.GatewayModule,
+            (0, common_1.forwardRef)(() => baileys_module_1.BaileysModule),
+            bullmq_1.BullModule.registerQueue({ name: 'process-wa-message' }),
+            bullmq_1.BullModule.registerQueue({ name: 'process-web-message' })
+        ],
         controllers: [chat_viewer_controller_1.ChatViewerController],
         providers: [chat_viewer_service_1.ChatViewerService]
     })

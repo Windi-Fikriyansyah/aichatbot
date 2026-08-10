@@ -9,13 +9,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.GatewayModule = void 0;
 const common_1 = require("@nestjs/common");
 const chat_gateway_1 = require("./chat/chat.gateway");
+const web_widget_gateway_1 = require("./chat/web-widget.gateway");
+const bullmq_1 = require("@nestjs/bullmq");
 let GatewayModule = class GatewayModule {
 };
 exports.GatewayModule = GatewayModule;
 exports.GatewayModule = GatewayModule = __decorate([
     (0, common_1.Module)({
-        providers: [chat_gateway_1.ChatGateway],
-        exports: [chat_gateway_1.ChatGateway]
+        imports: [
+            bullmq_1.BullModule.registerQueue({
+                name: 'process-web-message',
+            }),
+        ],
+        providers: [chat_gateway_1.ChatGateway, web_widget_gateway_1.WebWidgetGateway],
+        exports: [chat_gateway_1.ChatGateway, web_widget_gateway_1.WebWidgetGateway]
     })
 ], GatewayModule);
 //# sourceMappingURL=gateway.module.js.map

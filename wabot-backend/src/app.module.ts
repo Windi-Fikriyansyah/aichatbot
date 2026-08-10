@@ -15,6 +15,7 @@ import { ChatViewerModule } from './modules/chat-viewer/chat-viewer.module';
 import { TeamModule } from './modules/team/team.module';
 import { BillingModule } from './modules/billing/billing.module';
 import { SettingsModule } from './modules/settings/settings.module';
+import { WidgetModule } from './modules/widget/widget.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { SettingsModule } from './modules/settings/settings.module';
     TeamModule,
     BillingModule,
     SettingsModule,
+    WidgetModule,
   ],
   controllers: [AppController],
   providers: [AppService],

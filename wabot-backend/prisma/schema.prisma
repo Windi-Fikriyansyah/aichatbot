@@ -63,6 +63,7 @@ model BusinessAccount {
   conversations   Conversation[]
   products        Product[]
   aiConfig        AiConfig?
+  widgetConfig    WidgetConfig?
 }
 
 model TenantMember {
@@ -110,17 +111,32 @@ model AiConfig {
   businessAccount     BusinessAccount @relation(fields: [businessAccountId], references: [id], onDelete: Cascade)
 }
 
+model WidgetConfig {
+  id                String          @id @default(cuid())
+  businessAccountId String          @unique
+  primaryColor      String          @default("#2563EB") // Default brand-500
+  welcomeMessage    String          @default("Halo! Ada yang bisa saya bantu?")
+  botName           String          @default("Asisten Virtual")
+  position          String          @default("right") // left or right
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  businessAccount   BusinessAccount @relation(fields: [businessAccountId], references: [id], onDelete: Cascade)
+}
+
 model Conversation {
   id                String          @id @default(cuid())
   businessAccountId String
-  waSessionId       String
-  customerPhone     String
+  waSessionId       String?         // Optional for Web Chat
+  customerPhone     String?         // Optional for Web Chat
   customerName      String?
   status            ConvStatus      @default(AI_HANDLING)
+  channel           String          @default("WHATSAPP") // "WHATSAPP" or "WEB"
+  channelSessionId  String?         // To track web visitors
   lastMessageAt     DateTime?
   createdAt         DateTime        @default(now())
   businessAccount   BusinessAccount @relation(fields: [businessAccountId], references: [id], onDelete: Cascade)
-  waSession         WaSession       @relation(fields: [waSessionId], references: [id])
+  waSession         WaSession?      @relation(fields: [waSessionId], references: [id])
   messages          Message[]
 }
 

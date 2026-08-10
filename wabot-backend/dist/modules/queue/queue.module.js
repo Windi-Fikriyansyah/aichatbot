@@ -12,6 +12,7 @@ const bullmq_1 = require("@nestjs/bullmq");
 const config_1 = require("@nestjs/config");
 const message_processor_1 = require("./message.processor");
 const reply_processor_1 = require("./reply.processor");
+const web_message_processor_1 = require("./web-message.processor");
 const prisma_module_1 = require("../../prisma/prisma.module");
 const openrouter_module_1 = require("../openrouter/openrouter.module");
 const baileys_module_1 = require("../baileys/baileys.module");
@@ -43,7 +44,7 @@ exports.QueueModule = QueueModule = __decorate([
             (0, common_1.forwardRef)(() => baileys_module_1.BaileysModule),
             gateway_module_1.GatewayModule
         ],
-        providers: [message_processor_1.MessageProcessor, reply_processor_1.ReplyProcessor],
+        providers: [message_processor_1.MessageProcessor, reply_processor_1.ReplyProcessor, web_message_processor_1.WebMessageProcessor],
         exports: [bullmq_1.BullModule]
     })
 ], QueueModule);
