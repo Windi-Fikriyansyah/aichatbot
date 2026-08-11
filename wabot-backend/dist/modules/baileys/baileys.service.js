@@ -106,6 +106,18 @@ let BaileysService = BaileysService_1 = class BaileysService {
                         where: { sessionId },
                         data: { status: 'DISCONNECTED', qrCode: null },
                     });
+                    const fs = await import('fs');
+                    const path = await import('path');
+                    const sessionDir = path.resolve(`./sessions/${sessionId}`);
+                    if (fs.existsSync(sessionDir)) {
+                        try {
+                            await fs.promises.rm(sessionDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
+                            this.logger.log(`Cleared invalid session files for ${sessionId}`);
+                        }
+                        catch (err) {
+                            this.logger.error(`Failed to delete session directory on 401: ${err}`);
+                        }
+                    }
                 }
             }
         });
