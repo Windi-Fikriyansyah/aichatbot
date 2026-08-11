@@ -1,4 +1,4 @@
-(function() {
+(function () {
   // Find the script tag that loaded this script
   const scriptTag = document.currentScript || document.querySelector('script[src*="widget.js"]');
   if (!scriptTag) {
@@ -13,8 +13,10 @@
   }
 
   // Base URL (Change this to production URL later)
-  const BASE_URL = 'http://localhost:3001';
-  const API_URL = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}`;
+  // const BASE_URL = 'http://localhost:3001';
+  // const API_URL = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}`;
+  const BASE_URL = 'https://aiagent.wamapss.com';
+  const API_URL = 'https://aiagent.wamapss.com';
 
   // Create Container
   const container = document.createElement('div');
@@ -36,7 +38,7 @@
     .then(config => {
       const position = config.position || 'right';
       const primaryColor = config.primaryColor || '#2563EB';
-      
+
       if (position === 'left') {
         container.style.left = '20px';
         container.style.alignItems = 'flex-start';
@@ -81,18 +83,18 @@
         pointerEvents: 'auto',
         transition: 'transform 0.2s ease'
       });
-      
+
       // Default SVG icon (Chat)
       const chatIcon = '<svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>';
       // Close SVG icon (X)
       const closeIcon = '<svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>';
-      
+
       button.innerHTML = chatIcon;
 
       // Interactions
       button.addEventListener('mouseenter', () => button.style.transform = 'scale(1.05)');
       button.addEventListener('mouseleave', () => button.style.transform = 'scale(1)');
-      
+
       button.addEventListener('click', () => {
         isOpen = !isOpen;
         if (isOpen) {
