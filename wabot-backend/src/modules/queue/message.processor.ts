@@ -3,7 +3,7 @@ import { Job, Queue } from 'bullmq';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Logger, Inject, forwardRef } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { OpenRouterService } from '../openrouter/openrouter.service';
+import { AiService } from '../ai/ai.service';
 import { ChatGateway } from '../../gateway/chat/chat.gateway';
 import { BaileysService } from '../baileys/baileys.service';
 
@@ -13,7 +13,7 @@ export class MessageProcessor extends WorkerHost {
 
   constructor(
     private prisma: PrismaService,
-    private openRouter: OpenRouterService,
+    private ai: AiService,
     private chatGateway: ChatGateway,
     @InjectQueue('send-wa-reply') private replyQueue: Queue,
     @Inject(forwardRef(() => BaileysService)) private baileys: BaileysService
@@ -189,7 +189,7 @@ BATASAN & KEJUJURAN (WAJIB):
       formattedHistory.pop();
 
       // 3. Generate Reply
-      this.logger.log(`[DEBUG] Calling OpenRouter API with model: ${aiConfig?.model || 'anthropic/claude-3.5-sonnet'}...`);
+      this.logger.log(`[DEBUG] Calling AI API with model: ${aiConfig?.model || 'gpt-4o-mini'}...`);
       
       // Emit 'composing' (Typing...) to WhatsApp so user sees the bot is typing while waiting for AI
       // Emit 'composing' (Typing...) to WhatsApp so user sees the bot is typing while waiting for AI
@@ -200,8 +200,9 @@ BATASAN & KEJUJURAN (WAJIB):
         this.logger.warn(`Failed to send composing status: ${e}`);
       }
 
-      const aiResponse = await this.openRouter.generateReply({
-        model: aiConfig?.model || 'anthropic/claude-3.5-sonnet',
+      const aiResponse = await this.ai.generateReply({
+        provider: aiConfig?.provider,
+        model: aiConfig?.model || 'gpt-4o-mini',
         temperature: aiConfig?.temperature || 0.7,
         systemPrompt,
         history: formattedHistory,
@@ -218,7 +219,7 @@ BATASAN & KEJUJURAN (WAJIB):
         tokensUsed: aiResponse.tokensUsed,
         latencyMs: aiResponse.latencyMs,
         convId,
-        modelUsed: aiConfig?.model || 'anthropic/claude-3.5-sonnet'
+        modelUsed: aiConfig?.model || 'gpt-4o-mini'
       });
 
       this.chatGateway.server.to(`tenant-${businessAccountId}`).emit('ai-status', { status: 'AI finished typing', senderPhone });

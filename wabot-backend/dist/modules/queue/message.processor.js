@@ -19,20 +19,20 @@ const bullmq_2 = require("bullmq");
 const bullmq_3 = require("@nestjs/bullmq");
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../../prisma/prisma.service");
-const openrouter_service_1 = require("../openrouter/openrouter.service");
+const ai_service_1 = require("../ai/ai.service");
 const chat_gateway_1 = require("../../gateway/chat/chat.gateway");
 const baileys_service_1 = require("../baileys/baileys.service");
 let MessageProcessor = MessageProcessor_1 = class MessageProcessor extends bullmq_1.WorkerHost {
     prisma;
-    openRouter;
+    ai;
     chatGateway;
     replyQueue;
     baileys;
     logger = new common_1.Logger(MessageProcessor_1.name);
-    constructor(prisma, openRouter, chatGateway, replyQueue, baileys) {
+    constructor(prisma, ai, chatGateway, replyQueue, baileys) {
         super();
         this.prisma = prisma;
-        this.openRouter = openRouter;
+        this.ai = ai;
         this.chatGateway = chatGateway;
         this.replyQueue = replyQueue;
         this.baileys = baileys;
@@ -171,7 +171,7 @@ BATASAN & KEJUJURAN (WAJIB):
                 content: m.content
             }));
             formattedHistory.pop();
-            this.logger.log(`[DEBUG] Calling OpenRouter API with model: ${aiConfig?.model || 'anthropic/claude-3.5-sonnet'}...`);
+            this.logger.log(`[DEBUG] Calling AI API with model: ${aiConfig?.model || 'gpt-4o-mini'}...`);
             try {
                 const jid = senderPhone.includes('@') ? senderPhone : `${senderPhone.replace(/[^0-9]/g, '')}@s.whatsapp.net`;
                 await this.baileys.sendPresenceUpdate(sessionId, 'composing', jid);
@@ -179,8 +179,9 @@ BATASAN & KEJUJURAN (WAJIB):
             catch (e) {
                 this.logger.warn(`Failed to send composing status: ${e}`);
             }
-            const aiResponse = await this.openRouter.generateReply({
-                model: aiConfig?.model || 'anthropic/claude-3.5-sonnet',
+            const aiResponse = await this.ai.generateReply({
+                provider: aiConfig?.provider,
+                model: aiConfig?.model || 'gpt-4o-mini',
                 temperature: aiConfig?.temperature || 0.7,
                 systemPrompt,
                 history: formattedHistory,
@@ -195,7 +196,7 @@ BATASAN & KEJUJURAN (WAJIB):
                 tokensUsed: aiResponse.tokensUsed,
                 latencyMs: aiResponse.latencyMs,
                 convId,
-                modelUsed: aiConfig?.model || 'anthropic/claude-3.5-sonnet'
+                modelUsed: aiConfig?.model || 'gpt-4o-mini'
             });
             this.chatGateway.server.to(`tenant-${businessAccountId}`).emit('ai-status', { status: 'AI finished typing', senderPhone });
             return { success: true };
@@ -214,7 +215,7 @@ exports.MessageProcessor = MessageProcessor = MessageProcessor_1 = __decorate([
     __param(3, (0, bullmq_3.InjectQueue)('send-wa-reply')),
     __param(4, (0, common_1.Inject)((0, common_1.forwardRef)(() => baileys_service_1.BaileysService))),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService,
-        openrouter_service_1.OpenRouterService,
+        ai_service_1.AiService,
         chat_gateway_1.ChatGateway,
         bullmq_2.Queue,
         baileys_service_1.BaileysService])

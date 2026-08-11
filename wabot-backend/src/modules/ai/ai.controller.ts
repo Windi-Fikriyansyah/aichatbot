@@ -5,7 +5,7 @@ import { TenantAccessGuard } from '../../guards/tenant-access.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 
 @Controller('api')
-export class OpenRouterController {
+export class AiController {
   constructor(private readonly prisma: PrismaService) {}
 
   @UseGuards(JwtAuthGuard, TenantAccessGuard)
@@ -25,7 +25,8 @@ export class OpenRouterController {
     @Headers('x-tenant-id') tenantId: string,
     @Body() data: any,
   ) {
-    const provider = data.provider || (data.model?.split('/')[0]) || 'openrouter';
+    const provider = data.provider || 'openai';
+    
     const config = await this.prisma.aiConfig.upsert({
       where: { businessAccountId: tenantId },
       update: {
@@ -36,7 +37,7 @@ export class OpenRouterController {
       create: {
         businessAccountId: tenantId,
         provider,
-        model: data.model || 'anthropic/claude-3.5-sonnet',
+        model: data.model || 'gpt-4o-mini',
         temperature: data.temperature || 0.7,
       }
     });
@@ -47,11 +48,12 @@ export class OpenRouterController {
   @Get('ai/models')
   getModels() {
     return [
-      { id: 'anthropic/claude-3.5-sonnet', name: 'Claude 3.5 Sonnet' },
-      { id: 'openai/gpt-4o', name: 'GPT-4o' },
-      { id: 'deepseek/deepseek-chat', name: 'DeepSeek V3' },
-      { id: 'meta-llama/llama-3-70b-instruct', name: 'Llama 3 70B' },
-      { id: 'nvidia/nemotron-3-super-120b-a12b:free', name: 'Nvidia Nemotron 120B (Free)' }
+      { id: 'gpt-4o-mini', name: 'GPT-4o Mini (Cepat)', provider: 'openai' },
+      { id: 'gpt-4o', name: 'GPT-4o (Pintar)', provider: 'openai' },
+      { id: 'anthropic/claude-3.5-sonnet', name: 'Claude 3.5 Sonnet', provider: 'openrouter' },
+      { id: 'deepseek/deepseek-chat', name: 'DeepSeek V3', provider: 'openrouter' },
+      { id: 'meta-llama/llama-3-70b-instruct', name: 'Llama 3 70B', provider: 'openrouter' },
+      { id: 'nvidia/nemotron-3-super-120b-a12b:free', name: 'Nvidia Nemotron 120B (Free)', provider: 'openrouter' }
     ];
   }
 }

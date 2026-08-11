@@ -27,7 +27,7 @@ export default function SettingsPage() {
 
   // AI State
   const [aiConfig, setAiConfig] = useState<any>({ 
-    provider: 'openrouter', model: 'anthropic/claude-3.5-sonnet', temperature: 0.7, tone: 'professional', language: 'id', customSystemPrompt: '', escalationKeywords: [] 
+    provider: 'openai', model: 'gpt-4o-mini', temperature: 0.7, tone: 'professional', language: 'id', customSystemPrompt: '', escalationKeywords: [] 
   });
   const [escalationKeys, setEscalationKeys] = useState('');
   const [savingAi, setSavingAi] = useState(false);
@@ -294,11 +294,15 @@ export default function SettingsPage() {
                 <Label>Penyedia AI</Label>
                 <select 
                   value={aiConfig.provider}
-                  onChange={e => setAiConfig({...aiConfig, provider: e.target.value})}
+                  onChange={e => {
+                    const provider = e.target.value;
+                    const model = provider === 'openai' ? 'gpt-4o-mini' : 'anthropic/claude-3.5-sonnet';
+                    setAiConfig({...aiConfig, provider, model});
+                  }}
                   className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:focus:border-brand-800 outline-none transition-all"
                 >
-                  <option value="openrouter">OpenRouter</option>
                   <option value="openai">OpenAI</option>
+                  <option value="openrouter">OpenRouter</option>
                 </select>
               </div>
               <div className="space-y-1.5">
@@ -308,9 +312,19 @@ export default function SettingsPage() {
                   onChange={e => setAiConfig({...aiConfig, model: e.target.value})}
                   className="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:focus:border-brand-800 outline-none transition-all"
                 >
-                  <option value="anthropic/claude-3.5-sonnet">Claude 3.5 Sonnet (Terbaik)</option>
-                  <option value="openai/gpt-4o-mini">GPT-4o Mini (Cepat)</option>
-                  <option value="nvidia/nemotron-3-super-120b-a12b:free">Nvidia Nemotron 120B (Free)</option>
+                  {aiConfig.provider === 'openai' ? (
+                    <>
+                      <option value="gpt-4o-mini">GPT-4o Mini (Cepat & Hemat)</option>
+                      <option value="gpt-4o">GPT-4o (Pintar)</option>
+                    </>
+                  ) : (
+                    <>
+                      <option value="anthropic/claude-3.5-sonnet">Claude 3.5 Sonnet (Terbaik)</option>
+                      <option value="deepseek/deepseek-chat">DeepSeek V3 (Murah)</option>
+                      <option value="meta-llama/llama-3-70b-instruct">Llama 3 70B</option>
+                      <option value="nvidia/nemotron-3-super-120b-a12b:free">Nvidia Nemotron 120B (Free)</option>
+                    </>
+                  )}
                 </select>
               </div>
               <div className="space-y-1.5">

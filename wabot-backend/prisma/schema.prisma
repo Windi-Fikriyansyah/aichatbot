@@ -96,8 +96,8 @@ model WaSession {
 model AiConfig {
   id                  String          @id @default(cuid())
   businessAccountId   String          @unique
-  provider            String          @default("openrouter")
-  model               String          @default("anthropic/claude-3.5-sonnet") // OpenRouter Model ID
+  provider            String          @default("openai")
+  model               String          @default("gpt-4o-mini") // Model ID
   temperature         Float           @default(0.7)
   tone                String          @default("friendly")
   language            String          @default("id")

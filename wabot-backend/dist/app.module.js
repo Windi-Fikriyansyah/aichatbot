@@ -15,7 +15,7 @@ const prisma_module_1 = require("./prisma/prisma.module");
 const auth_module_1 = require("./modules/auth/auth.module");
 const gateway_module_1 = require("./gateway/gateway.module");
 const baileys_module_1 = require("./modules/baileys/baileys.module");
-const openrouter_module_1 = require("./modules/openrouter/openrouter.module");
+const ai_module_1 = require("./modules/ai/ai.module");
 const onboarding_module_1 = require("./modules/onboarding/onboarding.module");
 const queue_module_1 = require("./modules/queue/queue.module");
 const catalog_module_1 = require("./modules/catalog/catalog.module");
@@ -36,7 +36,7 @@ exports.AppModule = AppModule = __decorate([
             auth_module_1.AuthModule,
             gateway_module_1.GatewayModule,
             baileys_module_1.BaileysModule,
-            openrouter_module_1.OpenRouterModule,
+            ai_module_1.AiModule,
             onboarding_module_1.OnboardingModule,
             queue_module_1.QueueModule,
             catalog_module_1.CatalogModule,

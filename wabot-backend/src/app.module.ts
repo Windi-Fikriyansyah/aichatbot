@@ -6,7 +6,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { GatewayModule } from './gateway/gateway.module';
 import { BaileysModule } from './modules/baileys/baileys.module';
-import { OpenRouterModule } from './modules/openrouter/openrouter.module';
+import { AiModule } from './modules/ai/ai.module';
 import { OnboardingModule } from './modules/onboarding/onboarding.module';
 import { QueueModule } from './modules/queue/queue.module';
 import { CatalogModule } from './modules/catalog/catalog.module';
@@ -24,7 +24,7 @@ import { WidgetModule } from './modules/widget/widget.module';
     AuthModule,
     GatewayModule,
     BaileysModule,
-    OpenRouterModule,
+    AiModule,
     OnboardingModule,
     QueueModule,
     CatalogModule,

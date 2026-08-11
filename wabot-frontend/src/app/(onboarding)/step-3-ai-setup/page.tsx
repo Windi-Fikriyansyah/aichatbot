@@ -12,7 +12,8 @@ export default function Step3AiSetup() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    model: 'anthropic/claude-3.5-sonnet',
+    provider: 'openai',
+    model: 'gpt-4o-mini',
     temperature: 0.7
   });
 
@@ -41,12 +42,31 @@ export default function Step3AiSetup() {
       <div className="mb-8">
         <div className="flex items-center space-x-3 mb-2">
           <Bot className="w-8 h-8 text-brand-500" />
-          <h2 className="text-3xl font-bold text-gray-800 dark:text-white/90">Pengaturan AI (OpenRouter)</h2>
+          <h2 className="text-3xl font-bold text-gray-800 dark:text-white/90">Pengaturan AI</h2>
         </div>
         <p className="text-gray-500 dark:text-gray-400">Atur otak AI yang akan membalas pesan pelanggan Anda.</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="space-y-2">
+          <Label htmlFor="provider">Penyedia AI</Label>
+          <div className="relative">
+            <select 
+              id="provider" 
+              className="w-full appearance-none rounded-lg border border-gray-200 bg-transparent px-4 py-3 text-sm text-gray-800 outline-none transition-colors focus:border-brand-500 dark:border-gray-800 dark:text-white/90"
+              value={formData.provider}
+              onChange={(e) => {
+                const provider = e.target.value;
+                const model = provider === 'openai' ? 'gpt-4o-mini' : 'anthropic/claude-3.5-sonnet';
+                setFormData({...formData, provider, model});
+              }}
+            >
+              <option value="openai" className="dark:bg-gray-900">OpenAI</option>
+              <option value="openrouter" className="dark:bg-gray-900">OpenRouter</option>
+            </select>
+          </div>
+        </div>
+
         <div className="space-y-2">
           <Label htmlFor="model">Model AI</Label>
           <div className="relative">
@@ -56,11 +76,19 @@ export default function Step3AiSetup() {
               value={formData.model}
               onChange={(e) => setFormData({...formData, model: e.target.value})}
             >
-              <option value="anthropic/claude-3.5-sonnet" className="dark:bg-gray-900">Claude 3.5 Sonnet (Disarankan)</option>
-              <option value="openai/gpt-4o" className="dark:bg-gray-900">GPT-4o</option>
-              <option value="deepseek/deepseek-chat" className="dark:bg-gray-900">DeepSeek V3</option>
-              <option value="meta-llama/llama-3-70b-instruct" className="dark:bg-gray-900">Llama 3 70B</option>
-              <option value="nvidia/nemotron-3-super-120b-a12b:free" className="dark:bg-gray-900">Nvidia Nemotron 120B (Free)</option>
+              {formData.provider === 'openai' ? (
+                <>
+                  <option value="gpt-4o-mini" className="dark:bg-gray-900">GPT-4o Mini (Cepat & Hemat)</option>
+                  <option value="gpt-4o" className="dark:bg-gray-900">GPT-4o (Pintar)</option>
+                </>
+              ) : (
+                <>
+                  <option value="anthropic/claude-3.5-sonnet" className="dark:bg-gray-900">Claude 3.5 Sonnet (Disarankan)</option>
+                  <option value="deepseek/deepseek-chat" className="dark:bg-gray-900">DeepSeek V3</option>
+                  <option value="meta-llama/llama-3-70b-instruct" className="dark:bg-gray-900">Llama 3 70B</option>
+                  <option value="nvidia/nemotron-3-super-120b-a12b:free" className="dark:bg-gray-900">Nvidia Nemotron 120B (Free)</option>
+                </>
+              )}
             </select>
           </div>
         </div>

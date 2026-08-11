@@ -14,7 +14,7 @@ const message_processor_1 = require("./message.processor");
 const reply_processor_1 = require("./reply.processor");
 const web_message_processor_1 = require("./web-message.processor");
 const prisma_module_1 = require("../../prisma/prisma.module");
-const openrouter_module_1 = require("../openrouter/openrouter.module");
+const ai_module_1 = require("../ai/ai.module");
 const baileys_module_1 = require("../baileys/baileys.module");
 const gateway_module_1 = require("../../gateway/gateway.module");
 let QueueModule = class QueueModule {
@@ -40,7 +40,7 @@ exports.QueueModule = QueueModule = __decorate([
                 name: 'send-wa-reply',
             }),
             prisma_module_1.PrismaModule,
-            openrouter_module_1.OpenRouterModule,
+            ai_module_1.AiModule,
             (0, common_1.forwardRef)(() => baileys_module_1.BaileysModule),
             gateway_module_1.GatewayModule
         ],

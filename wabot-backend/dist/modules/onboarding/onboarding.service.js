@@ -69,8 +69,8 @@ let OnboardingService = class OnboardingService {
         });
     }
     async saveAiConfig(tenantId, data) {
-        const provider = data.provider || (data.model?.split('/')[0]) || 'openrouter';
-        const model = data.model || 'anthropic/claude-3.5-sonnet';
+        const provider = data.provider || 'openai';
+        const model = data.model || 'gpt-4o-mini';
         return this.prisma.aiConfig.upsert({
             where: { businessAccountId: tenantId },
             update: {

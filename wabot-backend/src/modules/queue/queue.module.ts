@@ -5,7 +5,7 @@ import { MessageProcessor } from './message.processor';
 import { ReplyProcessor } from './reply.processor';
 import { WebMessageProcessor } from './web-message.processor';
 import { PrismaModule } from '../../prisma/prisma.module';
-import { OpenRouterModule } from '../openrouter/openrouter.module';
+import { AiModule } from '../ai/ai.module';
 import { BaileysModule } from '../baileys/baileys.module';
 import { GatewayModule } from '../../gateway/gateway.module';
 
@@ -28,7 +28,7 @@ import { GatewayModule } from '../../gateway/gateway.module';
       name: 'send-wa-reply',
     }),
     PrismaModule,
-    OpenRouterModule,
+    AiModule,
     forwardRef(() => BaileysModule),
     GatewayModule
   ],

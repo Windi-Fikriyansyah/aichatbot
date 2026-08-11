@@ -2,7 +2,7 @@ import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { Logger, forwardRef, Inject } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { OpenRouterService } from '../openrouter/openrouter.service';
+import { AiService } from '../ai/ai.service';
 import { WebWidgetGateway } from '../../gateway/chat/web-widget.gateway';
 import { ChatGateway } from '../../gateway/chat/chat.gateway';
 
@@ -12,7 +12,7 @@ export class WebMessageProcessor extends WorkerHost {
 
   constructor(
     private prisma: PrismaService,
-    private openRouter: OpenRouterService,
+    private ai: AiService,
     private webGateway: WebWidgetGateway,
     private chatGateway: ChatGateway
   ) {
@@ -125,8 +125,9 @@ export class WebMessageProcessor extends WorkerHost {
       formattedHistory.pop(); 
 
       // 4. Generate Reply
-      const aiResponse = await this.openRouter.generateReply({
-        model: aiConfig?.model || 'anthropic/claude-3.5-sonnet',
+      const aiResponse = await this.ai.generateReply({
+        provider: aiConfig?.provider,
+        model: aiConfig?.model || 'gpt-4o-mini',
         temperature: aiConfig?.temperature || 0.7,
         systemPrompt,
         history: formattedHistory,
@@ -141,7 +142,7 @@ export class WebMessageProcessor extends WorkerHost {
           content: aiResponse.reply,
           tokensUsed: aiResponse.tokensUsed,
           latencyMs: aiResponse.latencyMs,
-          modelUsed: aiConfig?.model || 'anthropic/claude-3.5-sonnet'
+          modelUsed: aiConfig?.model || 'gpt-4o-mini'
         }
       });
 
