@@ -57,6 +57,23 @@ export default function Step2WaConnect() {
       }
     });
 
+    // Saat socket berhasil terhubung (atau reconnect setelah koneksi terputus/server restart),
+    // kita wajib sinkronisasi status terakhir. Di VPS, reconnect websocket lebih lambat
+    // dibanding local, sehingga seringkali event CONNECTED terlewat saat socket masih proses reconnect.
+    socket.on('connect', async () => {
+      try {
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/settings/wa-session`, {
+          headers: { 'x-tenant-id': tenantId }
+        });
+        if (res.data?.status === 'CONNECTED') {
+          setConnected(true);
+          setStatus('Berhasil terhubung!');
+        } else if (res.data?.qrCode) {
+          setQrCode(res.data.qrCode);
+        }
+      } catch (e) {}
+    });
+
     return () => {
       socket.disconnect();
     };
