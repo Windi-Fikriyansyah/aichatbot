@@ -40,6 +40,7 @@ export class SettingsService {
         language: data.language,
         escalationKeywords: data.escalationKeywords,
         knowledgeBase: data.knowledgeBase,
+        baseSystemPrompt: data.baseSystemPrompt,
       }
     });
   }
